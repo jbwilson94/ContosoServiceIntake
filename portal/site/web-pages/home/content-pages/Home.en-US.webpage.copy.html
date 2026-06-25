@@ -1,0 +1,40 @@
+<div class="row align-items-center g-4 contoso-home-layout">
+  <div class="col-12 col-lg-7 columnBlockLayout contoso-home-main">
+    {% if user %}
+    <h1 class="contoso-home-title">Welcome back, {{ user.fullname | escape }}</h1>
+    <p class="contoso-home-copy">Create a new service request or review the requests you have already submitted to Contoso.</p>
+    <div class="d-flex flex-wrap align-items-center gap-3">
+      <a href="/create-service-request" class="btn button1 contoso-home-action-primary">Create a Request</a>
+      <a href="/my-requests" class="btn button2 contoso-home-action-secondary">View My Requests</a>
+    </div>
+    {% else %}
+    <h1 class="contoso-home-title">Submit and track service requests</h1>
+    <p class="contoso-home-copy">Sign in to create a request for IT, Facilities, HR, or general service support, upload supporting files, and check request status.</p>
+    <div class="d-flex flex-wrap align-items-center gap-3">
+      <a href="{% if homeurl %}/{{ homeurl }}{% endif %}{{ website.sign_in_url_substitution }}" class="btn button1 contoso-home-action-primary">Sign In</a>
+    </div>
+    {% endif %}
+  </div>
+  <div class="col-12 col-lg-4 columnBlockLayout contoso-home-aside">
+    <div class="contoso-home-panel">
+      {% if user %}
+      <h2>Your request workspace</h2>
+      <ol>
+        <li>Start a request with the details Contoso needs to route it.</li>
+        <li>Attach supporting files when they help explain the issue.</li>
+        <li>Use My Requests to follow status and confirmation numbers.</li>
+      </ol>
+      {% else %}
+      <h2>What happens after sign in</h2>
+      <ol>
+        <li>Create a request using your signed-in profile.</li>
+        <li>Attach supporting files if they help explain the issue.</li>
+        <li>Return later to check request status and confirmation numbers.</li>
+      </ol>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="row sectionBlockLayout text-start" style="display: flex; flex-wrap: wrap; margin: 0px; min-height: auto; padding: 8px;">
+  <div class="container" style="padding: 0px; display: flex; flex-wrap: wrap;"><div class="col-lg-12 columnBlockLayout" style="flex-grow: 1; display: flex; flex-direction: column; min-width: 250px;"></div></div>
+</div>

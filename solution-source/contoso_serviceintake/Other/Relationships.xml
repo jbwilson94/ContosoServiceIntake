@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_contoso_servicerequest" />
+  <EntityRelationship Name="contoso_errorlog_servicerequest" />
+  <EntityRelationship Name="contoso_routingslarule_approver" />
+  <EntityRelationship Name="contoso_routingslarule_servicecategory" />
+  <EntityRelationship Name="contoso_routingslarule_team" />
+  <EntityRelationship Name="contoso_servicecategory_servicerequest" />
+  <EntityRelationship Name="contoso_servicerequest_approvedby" />
+  <EntityRelationship Name="contoso_servicerequest_contact" />
+  <EntityRelationship Name="contoso_servicerequest_routingslarule" />
+  <EntityRelationship Name="contoso_servicerequest_team" />
+  <EntityRelationship Name="lk_contoso_errorlog_createdby" />
+  <EntityRelationship Name="lk_contoso_errorlog_modifiedby" />
+  <EntityRelationship Name="lk_contoso_routingslarule_createdby" />
+  <EntityRelationship Name="lk_contoso_routingslarule_modifiedby" />
+  <EntityRelationship Name="lk_contoso_servicecategory_createdby" />
+  <EntityRelationship Name="lk_contoso_servicecategory_modifiedby" />
+  <EntityRelationship Name="lk_contoso_servicerequest_createdby" />
+  <EntityRelationship Name="lk_contoso_servicerequest_modifiedby" />
+  <EntityRelationship Name="organization_contoso_errorlog" />
+  <EntityRelationship Name="organization_contoso_routingslarule" />
+  <EntityRelationship Name="organization_contoso_servicecategory" />
+  <EntityRelationship Name="owner_contoso_servicerequest" />
+  <EntityRelationship Name="team_contoso_servicerequest" />
+  <EntityRelationship Name="user_contoso_servicerequest" />
+</EntityRelationships>

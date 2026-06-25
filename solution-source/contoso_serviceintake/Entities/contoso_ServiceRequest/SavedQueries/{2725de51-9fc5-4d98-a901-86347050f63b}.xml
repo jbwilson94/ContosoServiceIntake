@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{2725de51-9fc5-4d98-a901-86347050f63b}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="contoso_title" select="1" icon="1" preview="1">
+        <row name="result" id="contoso_servicerequestid">
+          <cell name="contoso_title" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="contoso_servicerequest">
+          <attribute name="contoso_servicerequestid" />
+          <attribute name="contoso_title" />
+          <attribute name="createdon" />
+          <order attribute="contoso_title" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="1" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Inactive Service Requests" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

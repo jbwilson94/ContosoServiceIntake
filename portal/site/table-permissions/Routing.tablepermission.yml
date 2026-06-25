@@ -1,0 +1,16 @@
+adx_accountrelationship: 
+adx_append: false
+adx_appendto: false
+adx_contactrelationship: 
+adx_create: false
+adx_delete: false
+adx_entitylogicalname: contoso_routingslarule
+adx_entityname: Routing
+adx_entitypermission_webrole:
+- 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+adx_entitypermissionid: dbbe854c-5a6c-4349-a5f1-c31a16b6e96c
+adx_parententitypermission: 
+adx_parentrelationship: 
+adx_read: true
+adx_scope: 756150000
+adx_write: false

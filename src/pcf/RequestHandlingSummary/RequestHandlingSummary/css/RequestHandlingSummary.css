@@ -1,0 +1,238 @@
+.contoso-action-center-host {
+    width: 100%;
+}
+
+.contoso-action-center {
+    --contoso-action-border: #d8dde6;
+    --contoso-action-muted: #5f6b7a;
+    --contoso-action-text: #111827;
+    --contoso-action-soft: #f8fafc;
+    background: #ffffff;
+    border: 1px solid var(--contoso-action-border);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+    box-sizing: border-box;
+    color: var(--contoso-action-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    padding: 18px;
+    width: 100%;
+}
+
+.contoso-action-center__header {
+    align-items: flex-start;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.contoso-action-center__title-block {
+    min-width: 0;
+}
+
+.contoso-action-center__eyebrow {
+    color: var(--contoso-action-muted);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.contoso-action-center__title {
+    color: var(--contoso-action-text);
+    font-size: 19px;
+    font-weight: 650;
+    line-height: 1.25;
+    margin-bottom: 4px;
+}
+
+.contoso-action-center__subtitle {
+    color: var(--contoso-action-muted);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.contoso-action-center__badge {
+    border-radius: 999px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1;
+    padding: 7px 10px;
+    white-space: nowrap;
+}
+
+.contoso-action-center__badge--normal {
+    background: #eef2f7;
+    color: #344054;
+}
+
+.contoso-action-center__badge--info {
+    background: #eaf0ff;
+    color: #193a8a;
+}
+
+.contoso-action-center__badge--warning {
+    background: #fff4d6;
+    color: #7a4b00;
+}
+
+.contoso-action-center__badge--danger {
+    background: #fde7e9;
+    color: #a4262c;
+}
+
+.contoso-action-center__badge--success {
+    background: #dff6dd;
+    color: #107c10;
+}
+
+.contoso-action-center__action {
+    border-left: 4px solid #8a94a6;
+    border-radius: 6px;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+    margin-bottom: 18px;
+    padding: 14px 16px;
+}
+
+.contoso-action-center__action--normal {
+    background: #f8fafc;
+    border-left-color: #667085;
+}
+
+.contoso-action-center__action--info {
+    background: #f4f7ff;
+    border-left-color: #2563eb;
+}
+
+.contoso-action-center__action--warning {
+    background: #fff9eb;
+    border-left-color: #d97706;
+}
+
+.contoso-action-center__action--danger {
+    background: #fff5f5;
+    border-left-color: #dc2626;
+}
+
+.contoso-action-center__action--success {
+    background: #f2fbf2;
+    border-left-color: #107c10;
+}
+
+.contoso-action-center__action-title {
+    color: var(--contoso-action-text);
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.contoso-action-center__action-message {
+    color: #344054;
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.contoso-action-center__steps {
+    color: #344054;
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 0;
+    padding-left: 18px;
+}
+
+.contoso-action-center__step + .contoso-action-center__step {
+    margin-top: 4px;
+}
+
+.contoso-action-center__facts {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+}
+
+.contoso-action-center__fact {
+    background: var(--contoso-action-soft);
+    border: 1px solid #edf0f4;
+    border-radius: 6px;
+    min-width: 0;
+    padding: 11px 12px;
+}
+
+.contoso-action-center__fact--info {
+    background: #f4f7ff;
+    border-color: #d7e2ff;
+}
+
+.contoso-action-center__fact--warning {
+    background: #fff9eb;
+    border-color: #ffe0a3;
+}
+
+.contoso-action-center__fact--danger {
+    background: #fff5f5;
+    border-color: #ffd5d5;
+}
+
+.contoso-action-center__fact--success {
+    background: #f2fbf2;
+    border-color: #cceccc;
+}
+
+.contoso-action-center__fact-label {
+    color: var(--contoso-action-muted);
+    font-size: 12px;
+    line-height: 1.35;
+    margin: 0 0 4px;
+}
+
+.contoso-action-center__fact-value {
+    color: var(--contoso-action-text);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.35;
+    margin: 0 0 3px;
+    overflow-wrap: anywhere;
+}
+
+.contoso-action-center__fact-detail {
+    color: var(--contoso-action-muted);
+    font-size: 12px;
+    line-height: 1.35;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+    .contoso-action-center__action {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .contoso-action-center {
+        padding: 16px;
+    }
+
+    .contoso-action-center__header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contoso-action-center__badge {
+        align-self: flex-start;
+    }
+
+    .contoso-action-center__facts {
+        grid-template-columns: 1fr;
+    }
+}

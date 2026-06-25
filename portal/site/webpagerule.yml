@@ -1,0 +1,37 @@
+- adx_name: Grant Change to Content
+  adx_right: 1
+  adx_webpageaccesscontrolruleid: 0f46b5e2-92b0-48e6-98a1-54a872a60a7a
+- adx_name: Restrict Read on Create Service Request
+  adx_right: 2
+  adx_scope: 1
+  adx_webpageaccesscontrolrule_webrole:
+  - 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+  adx_webpageaccesscontrolruleid: 401831c1-e80e-c0c7-70b7-a1d0bc1a3f1c
+  adx_webpageid: e60cc3f1-6350-42d4-b8a7-0e0c20d4c7e1
+- adx_name: Restrict Read on My Requests
+  adx_right: 2
+  adx_scope: 1
+  adx_webpageaccesscontrolrule_webrole:
+  - 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+  adx_webpageaccesscontrolruleid: 4314bc94-40ee-5503-1c15-7132445bdece
+  adx_webpageid: 4d3da0b2-1b0a-4a98-86c4-8026d56b8635
+- adx_name: Restrict Read on Request Confirmation
+  adx_right: 2
+  adx_scope: 1
+  adx_webpageaccesscontrolrule_webrole:
+  - 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+  adx_webpageaccesscontrolruleid: 4e99f968-678c-47fd-a559-8ee6f52ea25d
+  adx_webpageid: 38e38832-1d3c-42fe-a216-aea695d27434
+- adx_name: Restrict Read on Fetch Routing
+  adx_right: 2
+  adx_scope: 1
+  adx_webpageaccesscontrolrule_webrole:
+  - 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+  adx_webpageaccesscontrolruleid: e307d76b-d0f9-45c1-9e92-3aa5168bcd61
+  adx_webpageid: 43ae4326-f0a5-48d5-a02f-a37d35ea8a91
+- adx_name: Grant Change to Administrators
+  adx_right: 1
+  adx_webpageaccesscontrolrule_webrole:
+  - e6d28f30-b0db-46e8-a760-9c8d9d3916f0
+  adx_webpageaccesscontrolruleid: f726df94-5032-4892-945a-b276cc7b3edc
+  adx_webpageid: c89a2eb4-2250-4482-99c4-2ae1dcb2b861

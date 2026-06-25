@@ -1,0 +1,8 @@
+adx_description: Minimal template for JSON-style endpoint pages that should not render site chrome.
+adx_entityname: adx_webpage
+adx_isdefault: false
+adx_name: Contoso JSON Endpoint
+adx_pagetemplateid: b379c842-08c2-40ff-bf99-b64fa9d07213
+adx_type: 756150001
+adx_usewebsiteheaderandfooter: false
+adx_webtemplateid: 21874ff2-1598-4074-b052-104ff950b805

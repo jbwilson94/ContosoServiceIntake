@@ -1,0 +1,54 @@
+<!-- Resolve page title and home-page state for this reusable template. -->
+{% assign page_title = page.title | default: page.adx_title | default: title %}
+
+{% assign page_url = page.url | default: page.adx_partialurl %}
+{% assign request_path = request.path | default: '' %}
+{% assign is_home = false %}
+{% if page_url == '/' or page.adx_partialurl == '/' or request_path == '/' %}
+  {% assign is_home = true %}
+{% endif %}
+
+<!-- Main content landmark. The wrapper-body class is used by contoso-theme.css for footer flow. -->
+<div id="mainContent" class="wrapper-body" role="main">
+  <!-- Basic page shell. Keep Power Pages layout classes for compatibility and Contoso classes for custom styling. -->
+  <div class="row sectionBlockLayout text-start contoso-basic-section">
+    <div class="container contoso-basic-container">
+      <!-- Page heading area. Home hides breadcrumbs and the template page title because its copy owns the hero h1. -->
+      <div class="page-heading contoso-page-heading">
+        {% unless is_home %}
+          {% include 'Breadcrumbs' %}
+        {% endunless %}
+        {% unless is_home %}
+          <div class="page-header contoso-page-header">
+            <h1>{{ page_title | h }}</h1>
+          </div>
+        {% endunless %}
+      </div>
+
+      <!-- Editable page copy. Liquid is enabled so content can branch on portal context such as the signed-in user. -->
+      <div class="page-copy contoso-page-copy">
+        {% editable page 'adx_copy' type: 'html', liquid: true %}
+      </div>
+
+      <!-- Render any generated Dataverse component attached to the page after the editable copy. -->
+      {% if page.adx_entityform or page.adx_webform or page.adx_entitylist %}
+        <div class="page-components">
+          <!-- Power Pages list / entity list. -->
+          {% if page.adx_entitylist %}
+            {% include 'entity_list' key: page.adx_entitylist.id %}
+          {% endif %}
+
+          <!-- Basic form / entity form. -->
+          {% if page.adx_entityform %}
+            {% entityform id: page.adx_entityform.id %}
+          {% endif %}
+
+          <!-- Advanced form / multistep form. -->
+          {% if page.adx_webform %}
+            {% webform id: page.adx_webform.id %}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

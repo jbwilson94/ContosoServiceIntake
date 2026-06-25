@@ -1,0 +1,191 @@
+{% assign service_request_id = request.params.srid | default: request.params['srid'] | default: '' | remove: '{' | remove: '}' | strip %}
+{% assign fallback_confirmation_number = request.params.id | default: request.params['id'] | default: request.params.requestNumber | default: request.params.requestnumber | default: request.params.confirmationNumber | default: request.params.confirmationnumber | strip %}
+
+{% if service_request_id != '' %}
+  {% fetchxml submitted_request_result %}
+  <fetch top="1">
+    <entity name="contoso_servicerequest">
+      <attribute name="contoso_servicerequestid" />
+      <attribute name="contoso_title" />
+      <attribute name="contoso_confirmationnumber" />
+      <attribute name="contoso_categoryid" />
+      <attribute name="contoso_severity" />
+      <attribute name="contoso_status" />
+      <attribute name="contoso_requesteremail" />
+      <attribute name="contoso_routedteamid" />
+      <attribute name="contoso_routingslaruleid" />
+      <attribute name="contoso_slahours" />
+      <attribute name="contoso_responsedueon" />
+      <attribute name="contoso_resolutiondueon" />
+      <attribute name="contoso_approvalstatus" />
+      <attribute name="contoso_externalsyncstatus" />
+      <filter>
+        <condition attribute="contoso_servicerequestid" operator="eq" value="{{ service_request_id | escape }}" />
+      </filter>
+      <link-entity name="contoso_servicecategory" from="contoso_servicecategoryid" to="contoso_categoryid" link-type="outer" alias="category">
+        <attribute name="contoso_name" alias="categoryname" />
+      </link-entity>
+      <link-entity name="team" from="teamid" to="contoso_routedteamid" link-type="outer" alias="routedteam">
+        <attribute name="name" alias="routedteamname" />
+      </link-entity>
+      <link-entity name="contoso_routingslarule" from="contoso_routingslaruleid" to="contoso_routingslaruleid" link-type="outer" alias="routingrule">
+        <attribute name="contoso_name" alias="rulename" />
+        <attribute name="contoso_portalmessage" alias="portalmessage" />
+        <attribute name="contoso_approvalrequired" alias="approvalrequired" />
+        <attribute name="contoso_externalsyncrequired" alias="externalsyncrequired" />
+      </link-entity>
+    </entity>
+  </fetch>
+  {% endfetchxml %}
+  {% assign submitted_request = submitted_request_result.results.entities | first %}
+{% endif %}
+
+{% assign confirmation_number = submitted_request.contoso_confirmationnumber | default: fallback_confirmation_number %}
+{% assign category_name = submitted_request.contoso_categoryid.name | default: submitted_request.categoryname %}
+{% assign routed_team_name = submitted_request.contoso_routedteamid.name | default: submitted_request.routedteamname %}
+{% assign routing_message = submitted_request.portalmessage | default: '' %}
+{% assign sla_hours = submitted_request.contoso_slahours %}
+{% assign severity_value = submitted_request.contoso_severity.value | default: submitted_request.contoso_severity %}
+{% assign status_value = submitted_request.contoso_status.value | default: submitted_request.contoso_status %}
+{% assign approval_status_value = submitted_request.contoso_approvalstatus.value | default: submitted_request.contoso_approvalstatus %}
+{% assign external_sync_status_value = submitted_request.contoso_externalsyncstatus.value | default: submitted_request.contoso_externalsyncstatus %}
+
+{% case severity_value %}
+  {% when 100000000, '100000000' %}{% assign severity_label = 'Low' %}
+  {% when 100000001, '100000001' %}{% assign severity_label = 'Medium' %}
+  {% when 100000002, '100000002' %}{% assign severity_label = 'High' %}
+  {% else %}{% assign severity_label = severity_value %}
+{% endcase %}
+
+{% case status_value %}
+  {% when 100000000, '100000000' %}{% assign status_label = 'New' %}
+  {% when 100000001, '100000001' %}{% assign status_label = 'In Progress' %}
+  {% when 100000002, '100000002' %}{% assign status_label = 'Closed' %}
+  {% when 100000003, '100000003' %}{% assign status_label = 'Rejected' %}
+  {% when 100000004, '100000004' %}{% assign status_label = 'Draft' %}
+  {% else %}{% assign status_label = status_value | default: 'Submitted' %}
+{% endcase %}
+
+{% case approval_status_value %}
+  {% when 100000000, '100000000' %}{% assign approval_status_label = 'Not required' %}
+  {% when 100000001, '100000001' %}{% assign approval_status_label = 'Pending review' %}
+  {% when 100000002, '100000002' %}{% assign approval_status_label = 'Approved' %}
+  {% when 100000003, '100000003' %}{% assign approval_status_label = 'Rejected' %}
+  {% else %}{% assign approval_status_label = approval_status_value | default: 'Not available' %}
+{% endcase %}
+
+{% case external_sync_status_value %}
+  {% when 100000000, '100000000' %}{% assign external_sync_status_label = 'Not required' %}
+  {% when 100000001, '100000001' %}{% assign external_sync_status_label = 'Pending' %}
+  {% when 100000002, '100000002' %}{% assign external_sync_status_label = 'Synced' %}
+  {% when 100000003, '100000003' %}{% assign external_sync_status_label = 'Failed' %}
+  {% else %}{% assign external_sync_status_label = external_sync_status_value | default: 'Not available' %}
+{% endcase %}
+
+<div class="row sectionBlockLayout text-start">
+  {% if submitted_request %}
+    <section class="contoso-confirmation" aria-labelledby="confirmation-title">
+      <div class="contoso-confirmation-hero">
+        <p class="contoso-confirmation-kicker">Request submitted</p>
+        <h2 id="confirmation-title">Your request is with Contoso</h2>
+        <p>
+          {% if confirmation_number %}
+            We received your service request. Use confirmation number <strong>{{ confirmation_number | h }}</strong> when checking status or following up.
+          {% else %}
+            We received your service request. Your confirmation number will appear in My Requests shortly.
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="contoso-confirmation-grid">
+        <div class="contoso-confirmation-panel">
+          <h3>Request summary</h3>
+          <dl class="contoso-confirmation-list">
+            <div>
+              <dt>Title</dt>
+              <dd>{{ submitted_request.contoso_title | default: 'Service request' | h }}</dd>
+            </div>
+            <div>
+              <dt>Confirmation number</dt>
+              <dd>{{ confirmation_number | default: 'Pending' | h }}</dd>
+            </div>
+            <div>
+              <dt>Category</dt>
+              <dd>{{ category_name | default: 'Not available' | h }}</dd>
+            </div>
+            <div>
+              <dt>Severity</dt>
+              <dd>{{ severity_label | default: 'Not available' | h }}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>{{ status_label | default: 'Submitted' | h }}</dd>
+            </div>
+            <div>
+              <dt>Requester email</dt>
+              <dd>{{ submitted_request.contoso_requesteremail | default: 'Not provided' | h }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="contoso-confirmation-panel contoso-confirmation-panel-accent">
+          <h3>Expected handling</h3>
+          <dl class="contoso-confirmation-list">
+            <div>
+              <dt>Assigned team</dt>
+              <dd>{{ routed_team_name | default: 'General Service Desk' | h }}</dd>
+            </div>
+            <div>
+              <dt>Resolution target</dt>
+              <dd>{% if sla_hours %}{{ sla_hours | h }} hours{% else %}To be confirmed{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Approval</dt>
+              <dd>{{ approval_status_label | default: 'Not available' | h }}</dd>
+            </div>
+            <div>
+              <dt>External sync</dt>
+              <dd>{{ external_sync_status_label | default: 'Not available' | h }}</dd>
+            </div>
+            {% if submitted_request.contoso_resolutiondueon %}
+              <div>
+                <dt>Target date</dt>
+                <dd>{{ submitted_request.contoso_resolutiondueon | date: 'MMMM d, yyyy h:mm tt' }}</dd>
+              </div>
+            {% endif %}
+          </dl>
+          {% if routing_message %}
+            <p class="contoso-confirmation-note">{{ routing_message | h }}</p>
+          {% else %}
+            <p class="contoso-confirmation-note">Contoso will review the details and route the request based on category, severity, and availability.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="contoso-confirmation-next">
+        <h3>What happens next</h3>
+        <p>The assigned team will review your request and follow up if more information is needed. You can return to My Requests to check status and confirmation details.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="/my-requests" class="btn button1 contoso-action-button">View My Requests</a>
+          <a href="/create-service-request" class="btn button2 contoso-action-button">Create Another Request</a>
+        </div>
+      </div>
+    </section>
+  {% else %}
+    <section class="contoso-confirmation" aria-labelledby="confirmation-title">
+      <div class="contoso-confirmation-hero">
+        <p class="contoso-confirmation-kicker">Request submitted</p>
+        <h2 id="confirmation-title">Your request was submitted</h2>
+        {% if confirmation_number %}
+          <p>Your confirmation number is <strong>{{ confirmation_number | h }}</strong>. Request details will be available from My Requests after processing completes.</p>
+        {% else %}
+          <p>The request details could not be loaded from this link. You can still use My Requests to review submitted requests.</p>
+        {% endif %}
+      </div>
+      <div class="d-flex flex-wrap gap-3">
+        <a href="/my-requests" class="btn button1 contoso-action-button">View My Requests</a>
+        <a href="/create-service-request" class="btn button2 contoso-action-button">Create Another Request</a>
+      </div>
+    </section>
+  {% endif %}
+</div>

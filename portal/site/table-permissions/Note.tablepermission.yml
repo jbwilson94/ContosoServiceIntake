@@ -1,0 +1,16 @@
+adx_accountrelationship: 
+adx_append: true
+adx_appendto: false
+adx_contactrelationship: 
+adx_create: true
+adx_delete: true
+adx_entitylogicalname: annotation
+adx_entityname: Note
+adx_entitypermission_webrole:
+- 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+adx_entitypermissionid: 72b7369e-58de-417f-ad65-ea06905c010f
+adx_parententitypermission: 622b413d-bc7b-4eef-b1f8-cd0d879d7b52
+adx_parentrelationship: contoso_servicerequest_Annotations
+adx_read: true
+adx_scope: 756150003
+adx_write: true

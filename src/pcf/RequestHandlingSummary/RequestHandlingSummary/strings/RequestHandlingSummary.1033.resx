@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Contoso_RequestHandlingSummary_DisplayName" xml:space="preserve">
+    <value>Contoso Request Action Center</value>
+  </data>
+  <data name="Contoso_RequestHandlingSummary_Description" xml:space="preserve">
+    <value>Highlights the next coordinator action for a service request using routing, SLA, approval, sync, and close-readiness signals.</value>
+  </data>
+  <data name="Status_DisplayName" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Status_Description" xml:space="preserve">
+    <value>Current processing status for the service request.</value>
+  </data>
+  <data name="Severity_DisplayName" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="Severity_Description" xml:space="preserve">
+    <value>Severity selected for the service request.</value>
+  </data>
+  <data name="RoutedTeam_DisplayName" xml:space="preserve">
+    <value>Routed Team</value>
+  </data>
+  <data name="RoutedTeam_Description" xml:space="preserve">
+    <value>Team selected by the routing/SLA rule.</value>
+  </data>
+  <data name="Owner_DisplayName" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="Owner_Description" xml:space="preserve">
+    <value>Current Dataverse owner of the service request.</value>
+  </data>
+  <data name="SlaHours_DisplayName" xml:space="preserve">
+    <value>SLA Hours</value>
+  </data>
+  <data name="SlaHours_Description" xml:space="preserve">
+    <value>Resolution target in hours stamped by the routing plugin.</value>
+  </data>
+  <data name="ResponseDueOn_DisplayName" xml:space="preserve">
+    <value>Response Due On</value>
+  </data>
+  <data name="ResponseDueOn_Description" xml:space="preserve">
+    <value>Expected first response deadline.</value>
+  </data>
+  <data name="ResolutionDueOn_DisplayName" xml:space="preserve">
+    <value>Resolution Due On</value>
+  </data>
+  <data name="ResolutionDueOn_Description" xml:space="preserve">
+    <value>Expected resolution deadline.</value>
+  </data>
+  <data name="ApprovalStatus_DisplayName" xml:space="preserve">
+    <value>Approval Status</value>
+  </data>
+  <data name="ApprovalStatus_Description" xml:space="preserve">
+    <value>Approval state for requests that require manager review.</value>
+  </data>
+  <data name="ExternalSyncStatus_DisplayName" xml:space="preserve">
+    <value>External Sync Status</value>
+  </data>
+  <data name="ExternalSyncStatus_Description" xml:space="preserve">
+    <value>State of downstream external system synchronization.</value>
+  </data>
+  <data name="ExternalSystemId_DisplayName" xml:space="preserve">
+    <value>External System ID</value>
+  </data>
+  <data name="ExternalSystemId_Description" xml:space="preserve">
+    <value>Identifier returned by the external system after synchronization.</value>
+  </data>
+  <data name="ResolutionSummary_DisplayName" xml:space="preserve">
+    <value>Resolution Summary</value>
+  </data>
+  <data name="ResolutionSummary_Description" xml:space="preserve">
+    <value>Resolution notes used to assess close readiness for high-severity requests.</value>
+  </data>
+</root>

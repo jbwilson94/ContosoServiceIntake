@@ -1,0 +1,19 @@
+# Build and dependency output
+bin/
+obj/
+node_modules/
+
+# Local IDE/user state
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# OS files
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,65 @@
+.contoso-home-main,
+  .contoso-home-aside {
+    padding: 24px 0;
+  }
+
+  .contoso-home-title {
+    margin: 0 0 20px;
+    color: var(--contoso-color-ink);
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .contoso-home-copy {
+    max-width: 680px;
+    margin: 0 0 28px;
+    color: var(--contoso-color-body);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .contoso-home-action-primary {
+    min-width: 208px;
+  }
+
+  .contoso-home-action-secondary {
+    min-width: 180px;
+  }
+
+  .contoso-home-panel {
+    padding: 24px;
+    background: var(--contoso-color-surface);
+    border: 1px solid var(--contoso-color-border);
+    border-radius: var(--contoso-radius-panel);
+  }
+
+  .contoso-home-panel h2 {
+    margin: 0 0 18px;
+    color: var(--contoso-color-ink);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .contoso-home-panel ol {
+    margin: 0;
+    padding-left: 22px;
+    color: var(--contoso-color-body);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .contoso-home-panel li {
+    padding-left: 6px;
+  }
+
+  .contoso-home-panel li:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 575px) {
+    .contoso-home-title {
+      font-size: 36px;
+    }
+  }

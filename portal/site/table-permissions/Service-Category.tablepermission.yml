@@ -1,0 +1,16 @@
+adx_accountrelationship: 
+adx_append: true
+adx_appendto: false
+adx_contactrelationship: 
+adx_create: false
+adx_delete: false
+adx_entitylogicalname: contoso_servicecategory
+adx_entityname: Service Category
+adx_entitypermission_webrole:
+- 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+adx_entitypermissionid: 8674af6d-4b3b-4698-99b9-b8d6c58db502
+adx_parententitypermission: 
+adx_parentrelationship: 
+adx_read: true
+adx_scope: 756150000
+adx_write: false

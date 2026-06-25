@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="Contoso.ServiceIntake.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8a1748a5dc33c8d5" PluginAssemblyId="90dcb3cf-3b6f-f111-ab0e-7c1e524066d7" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Description>Contoso Service Intake plugin assembly for server-side routing and SLA stamping.</Description>
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/ContosoServiceIntakePlugins-90DCB3CF-3B6F-F111-AB0E-7C1E524066D7/ContosoServiceIntakePlugins.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="Contoso.ServiceIntake.Plugins.ServiceRequestRoutingPlugin, Contoso.ServiceIntake.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8a1748a5dc33c8d5" PluginTypeId="93dcb3cf-3b6f-f111-ab0e-7c1e524066d7" Name="Contoso.ServiceIntake.Plugins.ServiceRequestRoutingPlugin">
+      <Description>Routes Contoso Service Request rows by evaluating the editable Routing/SLA Rule matrix.</Description>
+      <FriendlyName>Service Request Routing Plugin</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{cd7b08f8-4a8f-4d06-adb3-b368056c4f48}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="contoso_title" select="1" icon="1" preview="1">
+        <row name="result" id="contoso_servicerequestid">
+          <cell name="contoso_title" width="300" />
+          <cell name="contoso_status" width="100" />
+          <cell name="createdon" width="125" />
+          <cell name="contoso_approvalstatus" width="131" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical" distinct="true">
+        <entity name="contoso_servicerequest">
+          <attribute name="contoso_servicerequestid" />
+          <attribute name="contoso_title" />
+          <attribute name="createdon" />
+          <order attribute="contoso_title" descending="false" />
+          <attribute name="contoso_approvalstatus" />
+          <attribute name="contoso_status" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+            <condition attribute="contoso_status" operator="ne" value="100000004" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Service Requests" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

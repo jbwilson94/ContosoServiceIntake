@@ -1,0 +1,407 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "contoso_sharedcommondataserviceforapps_6ff16"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_approvals": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "contoso_sharedapprovals_30539"
+        },
+        "api": {
+          "name": "shared_approvals"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "72242826-ae89-446f-90cd-cc9cc44e0aa3"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "contoso_servicerequest",
+              "subscriptionRequest/filteringattributes": "contoso_status,contoso_approvalstatus",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "conditions": [
+            {
+              "expression": "@and(equals(string(triggerOutputs()?['body/contoso_approvalstatus']), '100000001'), equals(string(triggerOutputs()?['body/contoso_status']), '100000000'), not(empty(triggerOutputs()?['body/_contoso_routingslaruleid_value'])))"
+            }
+          ]
+        }
+      },
+      "actions": {
+        "Scope": {
+          "actions": {
+            "Wait_for_an_approval": {
+              "runAfter": {
+                "Create_an_approval": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3b4f7333-1f55-4206-9848-f583e428d156"
+              },
+              "type": "OpenApiConnectionWebhook",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_approvals",
+                  "operationId": "WaitForAnApproval",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+                },
+                "parameters": {
+                  "approvalName": "@outputs('Create_an_approval')?['body/name']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Apply_approval_outcome": {
+              "runAfter": {
+                "Wait_for_an_approval": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6ce7b1d2-2d67-4f61-a4d7-df0a09c1d01a"
+              },
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@outputs('Wait_for_an_approval')?['body/outcome']",
+                  "Approve"
+                ]
+              },
+              "actions": {
+                "Update_a_row_-_Mark_request_approved": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2f3e2dbb-b4fc-4214-992f-e748910a06ec"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "UpdateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contoso_servicerequests",
+                      "recordId": "@triggerOutputs()?['body/contoso_servicerequestid']",
+                      "item/contoso_approvalstatus": 100000002,
+                      "item/contoso_approvedon": "@utcNow()"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Sync_to_external_ERP_if_required": {
+                  "runAfter": {
+                    "Update_a_row_-_Mark_request_approved": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f6d0838d-d291-4a23-8107-50d8f715f4a6"
+                  },
+                  "type": "If",
+                  "expression": {
+                    "equals": [
+                      "@string(triggerOutputs()?['body/contoso_externalsyncstatus'])",
+                      "100000001"
+                    ]
+                  },
+                  "actions": {
+                    "Post_request_to_mock_ERP": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "3c178759-2e9d-4e99-8924-bad5d8a4fb38"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "method": "POST",
+                        "uri": "https://jsonplaceholder.typicode.com/posts",
+                        "headers": {
+                          "Content-Type": "application/json; charset=UTF-8"
+                        },
+                        "body": {
+                          "title": "@triggerOutputs()?['body/contoso_title']",
+                          "body": "@triggerOutputs()?['body/contoso_description']",
+                          "userId": 1,
+                          "serviceRequestId": "@triggerOutputs()?['body/contoso_servicerequestid']",
+                          "confirmationNumber": "@triggerOutputs()?['body/contoso_confirmationnumber']",
+                          "category": "@triggerOutputs()?['body/_contoso_categoryid_value@OData.Community.Display.V1.FormattedValue']",
+                          "severity": "@triggerOutputs()?['body/contoso_severity@OData.Community.Display.V1.FormattedValue']",
+                          "routedTeam": "@triggerOutputs()?['body/_ownerid_value@OData.Community.Display.V1.FormattedValue']",
+                          "slaHours": "@triggerOutputs()?['body/contoso_slahours']",
+                          "responseDueOn": "@triggerOutputs()?['body/contoso_responsedueon']",
+                          "resolutionDueOn": "@triggerOutputs()?['body/contoso_resolutiondueon']"
+                        }
+                      }
+                    },
+                    "Update_a_row_-_Mark_external_sync_succeeded": {
+                      "runAfter": {
+                        "Post_request_to_mock_ERP": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "38c37293-3687-44b6-91cc-d2496a18dfda"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "contoso_servicerequests",
+                          "recordId": "@triggerOutputs()?['body/contoso_servicerequestid']",
+                          "item/contoso_externalsyncstatus": 100000002,
+                          "item/contoso_externalsystemid": "@concat('JSONPLACEHOLDER-', string(body('Post_request_to_mock_ERP')?['id']))",
+                          "item/contoso_externalsyncedon": "@utcNow()"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Update_a_row_-_Mark_external_sync_failed": {
+                      "runAfter": {
+                        "Post_request_to_mock_ERP": [
+                          "Failed",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "14bb5ebf-ae37-41cc-98f3-09fa9c412c5e"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "contoso_servicerequests",
+                          "recordId": "@triggerOutputs()?['body/contoso_servicerequestid']",
+                          "item/contoso_externalsyncstatus": 100000003
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Add_a_new_row_-_External_Sync_Error_Log": {
+                      "runAfter": {
+                        "Update_a_row_-_Mark_external_sync_failed": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "e5dbf2db-6a76-4ff1-8a98-c6f407fdf2d1"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "contoso_errorlogs",
+                          "item/contoso_name": "External ERP sync failed - @{coalesce(triggerOutputs()?['body/contoso_confirmationnumber'], triggerOutputs()?['body/contoso_title'], triggerOutputs()?['body/contoso_servicerequestid'])}",
+                          "item/contoso_source": 100000001,
+                          "item/contoso_operation": "External ERP Sync",
+                          "item/contoso_message": "The approved service request could not be synchronized to the mock ERP endpoint.",
+                          "item/contoso_details": "@string(outputs('Post_request_to_mock_ERP'))",
+                          "item/contoso_retryable": true,
+                          "item/contoso_flowrunid": "@workflow()?['run']?['name']",
+                          "item/contoso_status": 100000000,
+                          "item/contoso_servicerequestid@odata.bind": "@concat('/contoso_servicerequests(', triggerOutputs()?['body/contoso_servicerequestid'], ')')"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Update_a_row_-_Mark_request_rejected": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "3f7cbec3-7b79-4aa8-a28e-9f3204d8bf60"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_commondataserviceforapps",
+                        "operationId": "UpdateRecord",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                      },
+                      "parameters": {
+                        "entityName": "contoso_servicerequests",
+                        "recordId": "@triggerOutputs()?['body/contoso_servicerequestid']",
+                        "item/contoso_approvalstatus": 100000003,
+                        "item/contoso_status": 100000003,
+                        "item/contoso_approvedon": "@utcNow()"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                }
+              }
+            },
+            "Get_a_row_by_ID_-_Routing_SLA_Rules": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ed96f554-2112-46a8-8564-dd14ef0dca4b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "contoso_routingslarules",
+                  "recordId": "@triggerOutputs()?['body/_contoso_routingslaruleid_value']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Create_an_approval": {
+              "runAfter": {
+                "Get_a_row_by_ID_-_Approver": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bdf46ad2-eff4-4198-ae7b-75bd8be21b09"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_approvals",
+                  "operationId": "CreateAnApproval",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_approvals"
+                },
+                "parameters": {
+                  "approvalType": "Basic",
+                  "ApprovalCreationInput/title": "Approval for @{triggerOutputs()?['body/contoso_confirmationnumber']}",
+                  "ApprovalCreationInput/assignedTo": "@outputs('Get_a_row_by_ID_-_Approver')?['body/internalemailaddress']",
+                  "ApprovalCreationInput/details": "Service request: @{triggerOutputs()?['body/contoso_title']}\nConfirmation: @{triggerOutputs()?['body/contoso_confirmationnumber']}\nCategory: @{triggerOutputs()?['body/_contoso_categoryid_value@OData.Community.Display.V1.FormattedValue']}\nSeverity: @{triggerOutputs()?['body/contoso_severity@OData.Community.Display.V1.FormattedValue']}\nRouted team: @{triggerOutputs()?['body/_ownerid_value@OData.Community.Display.V1.FormattedValue']}\n\nDescription:\n@{triggerOutputs()?['body/contoso_description']}",
+                  "ApprovalCreationInput/enableNotifications": true,
+                  "ApprovalCreationInput/enableReassignment": true
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Get_a_row_by_ID_-_Approver": {
+              "runAfter": {
+                "Get_a_row_by_ID_-_Routing_SLA_Rules": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "57fc4a64-a439-4b64-a5b3-2b727c1194b3"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "recordId": "@outputs('Get_a_row_by_ID_-_Routing_SLA_Rules')?['body/_contoso_approverid_value']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e82db54d-1bfa-48dd-9f63-7b0674cf812a"
+          },
+          "type": "Scope"
+        },
+        "Catch": {
+          "actions": {
+            "Add_a_new_row_-_Error_Log": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "64aec5b3-d00a-44ea-9c2e-c5f5e82dc9bb"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "contoso_errorlogs",
+                  "item/contoso_name": "Approval flow failed - @{coalesce(triggerOutputs()?['body/contoso_confirmationnumber'], triggerOutputs()?['body/contoso_title'], triggerOutputs()?['body/contoso_servicerequestid'])}",
+                  "item/contoso_source": 100000001,
+                  "item/contoso_operation": "Service Request Approval Flow",
+                  "item/contoso_message": "Approval automation failed before a final decision could be stamped.",
+                  "item/contoso_details": "@string(result('Scope'))",
+                  "item/contoso_retryable": true,
+                  "item/contoso_flowrunid": "@workflow()?['run']?['name']",
+                  "item/contoso_status": 100000000,
+                  "item/contoso_servicerequestid@odata.bind": "@concat('/contoso_servicerequests(', triggerOutputs()?['body/contoso_servicerequestid'], ')')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Scope": [
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "df608b46-542e-4921-af03-1da2c0031345"
+          },
+          "type": "Scope"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

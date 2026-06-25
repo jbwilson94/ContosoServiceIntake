@@ -1,0 +1,16 @@
+adx_accountrelationship: 
+adx_append: true
+adx_appendto: false
+adx_contactrelationship: 
+adx_create: false
+adx_delete: false
+adx_entitylogicalname: contact
+adx_entityname: Contact
+adx_entitypermission_webrole:
+- 99df0b95-2f13-4e35-b76b-5a3cb0b3030a
+adx_entitypermissionid: 9fe2b573-15d5-457a-97dd-a321d5176700
+adx_parententitypermission: 
+adx_parentrelationship: 
+adx_read: true
+adx_scope: 756150004
+adx_write: true

@@ -1,0 +1,13 @@
+adx_authenticationrequired: true
+adx_editexistingrecordpermitted: true
+adx_multiplerecordsperuserpermitted: true
+adx_name: Service Request Intake
+adx_progressindicatorenabled: false
+adx_progressindicatorignorelaststep: false
+adx_progressindicatorposition: 756150000
+adx_progressindicatorprependstepnum: false
+adx_progressindicatortype: 756150000
+adx_savechangeswarningonclose: false
+adx_startnewsessiononload: false
+adx_startstep: ea3c7f6c-c469-f111-ab0d-7c1e52406d32
+adx_webformid: 59dca751-c469-f111-ab0d-7c1e52406d32

@@ -1,0 +1,42 @@
+{% assign category_id = request.params['categoryId'] | default: request.params.categoryId | default: '' | remove: '{' | remove: '}' | strip %}
+{% assign severity_value = request.params['severity'] | default: request.params.severity | default: '' | strip %}
+{% if category_id == '' or severity_value == '' %}
+{"matched":false,"message":"Select a category and severity to preview how this request will be routed."}
+{% else %}
+{% fetchxml routing_result %}
+<fetch top="1">
+  <entity name="contoso_routingslarule">
+    <attribute name="contoso_name" />
+    <attribute name="contoso_slahours" />
+    <attribute name="contoso_approvalrequired" />
+    <attribute name="contoso_externalsyncrequired" />
+    <attribute name="contoso_portalmessage" />
+    <attribute name="contoso_priority" />
+    <attribute name="contoso_routedteamid" />
+    <filter type="and">
+      <condition attribute="contoso_active" operator="eq" value="1" />
+      <filter type="or">
+        <condition attribute="contoso_categoryid" operator="eq" value="{{ category_id }}" />
+        <condition attribute="contoso_categoryid" operator="null" />
+      </filter>
+      <filter type="or">
+        <condition attribute="contoso_severity" operator="eq" value="{{ severity_value }}" />
+        <condition attribute="contoso_severity" operator="null" />
+      </filter>
+    </filter>
+    <order attribute="contoso_priority" descending="false" />
+    <link-entity name="team" from="teamid" to="contoso_routedteamid" link-type="outer" alias="routedteam">
+      <attribute name="name" alias="routedteamname" />
+    </link-entity>
+  </entity>
+</fetch>
+{% endfetchxml %}
+{% assign rule = routing_result.results.entities | first %}
+{% if rule %}
+{% assign team_name = rule.contoso_routedteamid.name | default: rule.routedteamname | default: '' %}
+{% assign message = rule.contoso_portalmessage | default: '' | strip_newlines | replace: '"', '\"' %}
+{"matched":true,"teamName":"{{ team_name | escape }}","slaHours":{{ rule.contoso_slahours | default: 0 }},"approvalRequired":{% if rule.contoso_approvalrequired %}true{% else %}false{% endif %},"externalSyncRequired":{% if rule.contoso_externalsyncrequired %}true{% else %}false{% endif %},"message":"{{ message | escape }}"}
+{% else %}
+{"matched":false,"message":"No active routing rule was found for this category and severity."}
+{% endif %}
+{% endif %}
