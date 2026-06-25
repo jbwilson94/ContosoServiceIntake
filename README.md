@@ -8,61 +8,62 @@ The solution uses Power Pages for the requester experience, Dataverse for the da
 
 ## Design Desisions
 
-Requirment A. Architecture & Data Strategy (Dataverse)
-    • Design a relational data model that supports service requests, a dynamic routing/SLA rules engine, and system error logging.
-    • Implement a robust security model ensuring external users only see their own data, and sensitive internal fields (e.g., internal resolution notes) are hidden from unauthorized staff.
-    • The system must automatically generate a user-friendly, formatted Confirmation Number forevery request.
+### Requirment A. Architecture & Data Strategy (Dataverse)
 
-Design:
-    - Simple data model: Service Request is the main table. Service Category is a lookup table instead of a choice so the values are easier to maintain. Routing/SLA Rule controls the routed team, SLA, approval, approver, and external sync settings. It uses the OOTB Team table for ownership and System User for approvals. Error Log captures flow, plugin, and API issues. Contact is used for authenticated portal users.
-    - I kept the security role work simple for the assessment. I added Service Request permissions so routed teams can own requests. In a real environment I would extend this with least-privilege read access to Contact, Service Category, and Routing/SLA Rule as needed.
-    - For Power Pages table permissions, everything is based on the authenticated OOTB web role. Service Category has global read, Contact has self access for the profile form, and Service Request uses contact scope so users only see their own requests.
-    - Confirmation Number is an autonumber column so every request gets a formatted friendly number automatically.
+**Requirement:**
 
-Requirment B. External User Experience (Power Pages)
-    • Build an authenticated portal where users can submit their requests and upload supporting
-    documentation.
-    • The submission process must be multi-step.
-    • Advanced Requirement: The portal must provide real-time dynamic feedback before
-    submission (e.g., calculating and displaying the expected SLA or routing destination on the
-    screen based on user inputs) without requiring a full page reload. You must utilize the Power
-    Pages Web API and/or Liquid templating to achieve this.
+- Design a relational data model that supports service requests, a dynamic routing/SLA rules engine, and system error logging.
+- Implement a robust security model ensuring external users only see their own data, and sensitive internal fields (e.g., internal resolution notes) are hidden from unauthorized staff.
+- The system must automatically generate a user-friendly, formatted Confirmation Number forevery request.
 
-Design:
-    - Made Entra ID the default login provider and used contact-scoped permissions on Service Request so portal users only see their own records.
-    - The multi-step form is split into Request Details first, then Supporting Documents.
-    - For the live routing/SLA feedback, category and severity changes call a lightweight `/fetch-routing` page that returns JSON generated with Liquid/FetchXML. I chose this instead of enabling the full Power Pages Web API because it is simpler, and less chance to expose unwanted column data. And plain liquid would not work since this only runs on page refresh.
+**Design:**
 
-Requirment C. Process Automation & Integration (Power Automate)
-    • Design an automated process to handle approvals for high-priority items.
-    • Integration Requirement: Upon approval, the process must simulate syncing the data to an
-    external REST API (e.g., posting to a mock endpoint like reqres.in) and storing the external
-    system’s ID back in Dataverse.
-    • Resiliency: The automation must utilize enterprise error-handling patterns (e.g., Try/Catch
-    scopes). Any failures in the API call or approval process must be gracefully handled and written
-    to your custom Dataverse error log.
+- Simple data model: Service Request is the main table. Service Category is a lookup table instead of a choice so the values are easier to maintain. Routing/SLA Rule controls the routed team, SLA, approval, approver, and external sync settings. It uses the OOTB Team table for ownership and System User for approvals. Error Log captures flow, plugin, and API issues. Contact is used for authenticated portal users.
+- I kept the security role work simple for the assessment. I added Service Request permissions so routed teams can own requests. In a real environment I would extend this with least-privilege read access to Contact, Service Category, and Routing/SLA Rule as needed.
+- For Power Pages table permissions, everything is based on the authenticated OOTB web role. Service Category has global read, Contact has self access for the profile form, and Service Request uses contact scope so users only see their own requests.
+- Confirmation Number is an autonumber column so every request gets a formatted friendly number automatically.
 
-Design:
-    - Approval flow starts when the plugin routes a submitted request and sets Approval Status to `Pending`.
-    - The flow reads the approver from the Routing/SLA Rule, waits for approval, then posts to a mock REST endpoint and stores the returned external system ID back on the request.
-    - The flow uses simple try/catch-style scopes. If approval or external sync fails, the catch path writes the details to the Error Log table with the flow run context.
+### Requirment B. External User Experience (Power Pages)
 
-Requirment D. Extensibility & Pro-Code While low-code is preferred, complex enterprise scenarios require pro-code extensibility. You must implement the following, justifying your architectural placement for each:
-    • Backend Logic (C# Plugin or Custom API): Implement a server-side component to handle a
-    complex business rule. For example, use a plugin to dynamically route the ticket based on your
-    rules engine, or use it to enforce the guardrail that blocks closing a critical request without
-    sufficient resolution documentation.
-    • Frontend UX (PCF Control): Develop a custom Power Apps Component Framework (PCF) control
-    to enhance the model-driven app experience for internal coordinators (e.g., a visual severity
-    selector, a custom timeline, or a dynamic status indicator).
+**Requirement:**
 
-Design:
-    - C# Plugin handles the core server-side rules for Service Requests. Since the multi-step portal creates the row before the user is fully done, the plugin keeps the request in `Draft` on create. The final portal step changes the status to `New`, and that update is the trigger for routing. The plugin then reads the Routing/SLA Rule table, assigns the correct owner team, sets the SLA fields, and sets the approval and external sync statuses. It also prevents high severity requests from being closed without a resolution summary. This is in a plugin because this logic needs to run the same way from the portal, model-driven app, import, API, or flow.
-    - PCF gives internal users a quick summary of how the request is being handled. It shows routing, owner, SLA, approval, external sync, and close readiness in one place. It does not update the record. I used a PCF because these fields could be shown separately on the form, but the control makes the handling status easier to read.
+- Build an authenticated portal where users can submit their requests and upload supporting documentation.
+- The submission process must be multi-step.
+- Advanced Requirement: The portal must provide real-time dynamic feedback before submission (e.g., calculating and displaying the expected SLA or routing destination on the screen based on user inputs) without requiring a full page reload. You must utilize the Power Pages Web API and/or Liquid templating to achieve this.
 
+**Design:**
 
-DESIGN NOTE: Due to the limited assessment timeline, I used Codex to help accelerate work such as generating Dataverse tables and columns, Power Pages components, the C# plugin, PCF control and documentation. I still made the architecture and design decisions and reviewed the generated output as part of the build.
+- Made Entra ID the default login provider and used contact-scoped permissions on Service Request so portal users only see their own records.
+- The multi-step form is split into Request Details first, then Supporting Documents.
+- For the live routing/SLA feedback, category and severity changes call a lightweight `/fetch-routing` page that returns JSON generated with Liquid/FetchXML. I chose this instead of enabling the full Power Pages Web API because it is simpler, and less chance to expose unwanted column data. And plain liquid would not work since this only runs on page refresh.
 
+### Requirment C. Process Automation & Integration (Power Automate)
+
+**Requirement:**
+
+- Design an automated process to handle approvals for high-priority items.
+- Integration Requirement: Upon approval, the process must simulate syncing the data to an external REST API (e.g., posting to a mock endpoint like reqres.in) and storing the external system’s ID back in Dataverse.
+- Resiliency: The automation must utilize enterprise error-handling patterns (e.g., Try/Catch scopes). Any failures in the API call or approval process must be gracefully handled and written to your custom Dataverse error log.
+
+**Design:**
+
+- Approval flow starts when the plugin routes a submitted request and sets Approval Status to `Pending`.
+- The flow reads the approver from the Routing/SLA Rule, waits for approval, then posts to a mock REST endpoint and stores the returned external system ID back on the request.
+- The flow uses simple try/catch-style scopes. If approval or external sync fails, the catch path writes the details to the Error Log table with the flow run context.
+
+### Requirment D. Extensibility & Pro-Code While low-code is preferred, complex enterprise scenarios require pro-code extensibility. You must implement the following, justifying your architectural placement for each:
+
+**Requirement:**
+
+- Backend Logic (C# Plugin or Custom API): Implement a server-side component to handle a complex business rule. For example, use a plugin to dynamically route the ticket based on your rules engine, or use it to enforce the guardrail that blocks closing a critical request without sufficient resolution documentation.
+- Frontend UX (PCF Control): Develop a custom Power Apps Component Framework (PCF) control to enhance the model-driven app experience for internal coordinators (e.g., a visual severity selector, a custom timeline, or a dynamic status indicator).
+
+**Design:**
+
+- C# Plugin handles the core server-side rules for Service Requests. Since the multi-step portal creates the row before the user is fully done, the plugin keeps the request in `Draft` on create. The final portal step changes the status to `New`, and that update is the trigger for routing. The plugin then reads the Routing/SLA Rule table, assigns the correct owner team, sets the SLA fields, and sets the approval and external sync statuses. It also prevents high severity requests from being closed without a resolution summary. This is in a plugin because this logic needs to run the same way from the portal, model-driven app, import, API, or flow.
+- PCF gives internal users a quick summary of how the request is being handled. It shows routing, owner, SLA, approval, external sync, and close readiness in one place. It does not update the record. I used a PCF because these fields could be shown separately on the form, but the control makes the handling status easier to read.
+
+> DESIGN NOTE: Due to the limited assessment timeline, I used Codex to help accelerate work such as generating Dataverse tables and columns, Power Pages components, the C# plugin, PCF control and documentation. I still made the architecture and design decisions and reviewed the generated output as part of the build.
 ## Delivered Components
 
 - Managed Dataverse solution: `contoso_serviceintake`
